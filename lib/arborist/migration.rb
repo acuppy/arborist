@@ -32,9 +32,10 @@ module Arborist
 
       def define_model_method model_args
         define_method model_args.method_name do
-          reference = self.class.ref_model.fetch model_args.ref_model
-          reference.tap do |ref|
-            ref.reset_column_information
+          @_ref ||= {}
+          @_ref[model_args] ||= begin
+            ref = self.class.ref_model.fetch model_args.ref_model
+            ref.tap(&:reset_column_information)
           end
         end
       end
