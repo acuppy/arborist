@@ -20,3 +20,31 @@ def teardown_db
   conn = ActiveRecord::Base.connection
   conn.tables.each { |t| conn.drop_table t }
 end
+
+class TestModel < ActiveRecord::Base
+  self.table_name = :test
+end
+
+class TestMigration < Arborist::Migration
+  model :TestModel
+
+  data do
+    model.find_each do |tm|
+      tm.fullname = 'abc'
+      tm.save!
+    end
+  end
+
+  def change
+    add_column :test, :fullname, :string
+  end
+end
+
+class SecondMigration < Arborist::Migration
+  model :TestModel
+  data { :noop }
+
+  def change
+    rename_column :test, :fullname, :full_name
+  end
+end

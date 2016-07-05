@@ -1,33 +1,5 @@
 require 'spec_helper'
 
-class TestModel < ActiveRecord::Base
-  self.table_name = :test
-end
-
-class TestMigration < Arborist::Migration
-  model :TestModel
-
-  data do
-    model.find_each do |tm|
-      tm.fullname = 'abc'
-      tm.save!
-    end
-  end
-
-  def change
-    add_column :test, :fullname, :string
-  end
-end
-
-class SecondMigration < Arborist::Migration
-  model :TestModel
-  data { :noop }
-  
-  def change
-    rename_column :test, :fullname, :full_name
-  end
-end
-
 describe Arborist::Migration do
   describe Arborist::Migration::Collection do
     subject(:collection) { described_class.new }
