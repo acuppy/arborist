@@ -2,9 +2,10 @@ require_relative 'configuration'
 
 module Arborist
   config :migration do |c|
-    c.fallback = ModelReferenceError
-    c.default_direction = :up
-    c.default_message = 'Migrating data...'
+    c.fallback            = ModelReferenceError
+    c.default_method_name = :model
+    c.default_direction   = :up
+    c.default_message     = 'Migrating data...'
   end
 
   class Migration < ActiveRecord::Migration
