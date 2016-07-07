@@ -56,6 +56,14 @@ describe Arborist::Migration do
         expect(Arborist::Migration.collection[:down].length).to eq 1
       end
     end
+
+    context 'when providing a data class' do
+      it 'delegates to the class' do
+        Arborist::Migration.data use: Proc
+
+        expect(Arborist::Migration.collection[:up].length).to eq 1
+      end
+    end
   end
 
   describe '.model' do

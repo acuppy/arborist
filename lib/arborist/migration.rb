@@ -3,19 +3,23 @@ require_relative 'configuration'
 module Arborist
   config :migration do |c|
     c.fallback = ModelReferenceError
+    c.default_direction = :up
   end
 
   class Migration < ActiveRecord::Migration
     require_relative 'migration/collection'
+    require_relative 'migration/data_migration'
     require_relative 'migration/model_arguments'
 
     class << self
       attr_accessor :collection
       attr_accessor :ref_model
 
-      def data dir = :up, &migration
+      def data *args, &routine
+        data_migration = DataMigration.new *args, &routine
+        
         self.collection ||= Collection.new
-        self.collection[dir] << migration
+        self.collection[data_migration.direction] << data_migration
       end
 
       def model *args

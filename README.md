@@ -57,12 +57,12 @@ method.
 ```ruby
 class AddAdminToUser < Arborist::Migration
   class UpdateAdminFlag
-    def run
+    def call
       # custom migration ...
     end
   end
 
-  data UpdateAdminFlag
+  data use: UpdateAdminFlag
 
   def change
     add_column :users, :admin, :boolean, default: false

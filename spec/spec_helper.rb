@@ -27,7 +27,7 @@ end
 
 class TestMigration < Arborist::Migration
   model :TestModel
-
+  
   data do
     model.find_each do |tm|
       tm.fullname = 'abc'
