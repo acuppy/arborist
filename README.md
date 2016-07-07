@@ -20,7 +20,7 @@ end
 
 By default `data` takes a forward-only approach and assumes by rolling back
 the schema would automatically revert the data migration.  However, you can
-and `up` and `down` migration with similar corresponding method options:
+declare both `up` and `down` migrations with similar corresponding method options:
 
 ```ruby
 class AddAdminToUser < Arborist::Migration
@@ -50,8 +50,9 @@ end
 ```
 
 For more complex data migrations you can provide a class.  The only
-expectation is that the class being referenced includes a public `#run`
-method.
+expectation is that the class being referenced includes a public `call`
+method. And, like other previous implementations, you can provide options such
+as `say`, `up` and `down` (to name a few).
 
 
 ```ruby
