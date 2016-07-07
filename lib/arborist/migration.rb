@@ -4,6 +4,7 @@ module Arborist
   config :migration do |c|
     c.fallback = ModelReferenceError
     c.default_direction = :up
+    c.default_message = 'Migrating data...'
   end
 
   class Migration < ActiveRecord::Migration
@@ -17,10 +18,15 @@ module Arborist
 
       def data *args, &routine
         data_migration = DataMigration.new *args, &routine
-        
+
         self.collection ||= Collection.new
         self.collection[data_migration.direction] << data_migration
       end
+
+      # def schema dir = :up, &migration
+      #   self.collection ||= Collection.new
+      #   self.collection[dir] << migration
+      # end
 
       def model *args
         model_args = ModelArguments.new args
@@ -58,7 +64,9 @@ module Arborist
 
     def exec_migration conn, dir
       super conn, dir
-      collection[dir].each { |m| instance_eval(&m) }
+      collection[dir].each do |m|
+        m.report { instance_eval(&m.routine) }
+      end
     end
 
     private
