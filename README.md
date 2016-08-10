@@ -122,12 +122,12 @@ method reference for each:
 
 ```ruby
 class AddAdminToUser < Arborist::Migration
-  model :User,    as: :user_model
-  model :Company, as: :company_model
+  model :User,    as: :user
+  model :Company, as: :company
 
   data do
-    user_model # ...
-    company_model # ...
+    user.all # ...
+    company.all # ...
   end
   # ...
 end
