@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["adam@codingzeal.com"]
   spec.summary       = %q{Framework for working with data migrations and seeds
     in a Rails application}
-  spec.homepage      = 'https://github.com/CodingZeal/arborist'
+  spec.homepage      = 'https://github.com/acuppy/arborist'
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
