@@ -1,0 +1,20 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'db/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - Guardfile
+  DisplayCopNames: true
+Rails:
+  Enabled: true
+Style/Documentation:
+  Enabled: false
+Style/HashSyntax:
+  Exclude:
+    - Rakefile
+    - '**/*.rake'
+Style/LambdaCall:
+  Enabled: false
+Style/MultilineMethodCallIndentation:
+  Enabled: false
