@@ -2,8 +2,7 @@ class Arborist::Migration::DataMigration
   attr_reader :direction, :routine
 
   def initialize *args, &block
-    @options = args.extract_options!
-
+    @options   = args.extract_options!
     @direction = args.first || config.default_direction
     @routine   = @options[:use].new rescue block
   end
@@ -17,7 +16,7 @@ class Arborist::Migration::DataMigration
   private
 
   attr_reader :options
-
+  
   def config
     Arborist.config.migration
   end

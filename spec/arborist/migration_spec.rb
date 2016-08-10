@@ -1,33 +1,8 @@
 require 'spec_helper'
 
 describe Arborist::Migration do
-  describe Arborist::Migration::Collection do
-    subject(:collection) { described_class.new }
-
-    it { expect(collection.fetch :up).to eq [] }
-    it { expect(collection.fetch :down).to eq [] }
-  end
-
-  describe Arborist::Migration::ModelArguments do
-    subject(:model_args) { described_class.new args }
-
-    context 'when default' do
-      let(:args) { [:TestModel] }
-
-      it { expect(model_args.ref_model).to eq :TestModel }
-      it { expect(model_args.method_name).to eq :model }
-    end
-
-    context 'when declaring a method name' do
-      let(:args) { [:TestModel, { as: :test_method }] }
-
-      it { expect(model_args.ref_model).to eq :TestModel }
-      it { expect(model_args.method_name).to eq :test_method }
-    end
-  end
-
   describe 'public interface' do
-    %i( collection ref_model data model reset! ).each do |class_method|
+    %i( collection model_ref data model reset! ).each do |class_method|
       it { expect(described_class).to respond_to class_method }
     end
   end
@@ -66,6 +41,28 @@ describe Arborist::Migration do
     end
   end
 
+  describe '.schema' do
+    after { Arborist::Migration.reset! }
+
+    context 'when a migration method is passed in' do
+      before do
+        TestMigration.class_eval do
+          schema(:up) {}
+        end
+      end
+
+      it { expect(TestMigration.new).to respond_to :up }
+    end
+
+    context 'when a migration method being passed in does not exist' do
+      specify do
+        expect {
+          TestMigration.class_eval { schema(:foo) {} }
+        }.to raise_error Arborist::UnknownSchemaMethod
+      end
+    end
+  end
+
   describe '.model' do
     context 'when the referenced model exists' do
       before { Arborist::Migration.model :TestModel }
@@ -85,6 +82,7 @@ describe Arborist::Migration do
           .to raise_error Arborist::ModelReferenceError
       end
     end
+
   end
 
   describe '.reset!' do
