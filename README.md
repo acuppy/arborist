@@ -20,7 +20,8 @@ end
 
 By default `data` takes a forward-only approach and assumes by rolling back
 the schema would automatically revert the data migration.  However, you can
-declare both `up` and `down` migrations with similar corresponding method options:
+declare both `up` and `down` migrations with similar corresponding method
+options:
 
 ```ruby
 class AddAdminToUser < Arborist::Migration
@@ -33,6 +34,23 @@ class AddAdminToUser < Arborist::Migration
   end
 
   def change
+    add_column :users, :admin, :boolean
+  end
+end
+```
+
+### Helpers
+
+Although all `ActiveRecord::Migration` methods are supported, there are a set
+of helpers to define one action against another.
+
+```ruby
+class AddAdminToUser < Arborist::Migration
+  data do # => :up
+    # data only adjustments
+  end
+
+  schema do # => :change
     add_column :users, :admin, :boolean
   end
 end
@@ -53,7 +71,6 @@ For more complex data migrations you can provide a class.  The only
 expectation is that the class being referenced includes a public `call`
 method. And, like other previous implementations, you can provide options such
 as `say`, `up` and `down` (to name a few).
-
 
 ```ruby
 class AddAdminToUser < Arborist::Migration
@@ -91,7 +108,7 @@ class AddAdminToUser < Arborist::Migration
   model :User
 
   data do
-    model.all do |user|
+    model.find_each do |user|
       user.admin = true
       user.save!
     end
@@ -100,43 +117,36 @@ class AddAdminToUser < Arborist::Migration
 end
 ```
 
-Now, if in a future iteration of the code, you remove the model or change the
-name of a model, older migrations will use the more recently defined reference.
+Further, if you need to reference multiple models, you can do so by setting a
+method reference for each:
 
 ```ruby
-class AddAdminToUser < ActiveRecord::Migration
-  class Data < Arborist::Migration::Base
-    model :User => :Person
+class AddAdminToUser < Arborist::Migration
+  model :User,    as: :user_model
+  model :Company, as: :company_model
+
+  data do
+    user_model # ...
+    company_model # ...
   end
   # ...
 end
 ```
 
-Similarly, you can do the same for columns:
+#### Now why not just reference the model directly?
+
+Answer, Arborist intelligently detects if a model reference is missing (i.e.
+  removed at a later iteration) and provides a set of fallback options.
+
+The most common strategy is to forward all model requests to the renamed model:
 
 ```ruby
-class AddAdminToUser < ActiveRecord::Migration
-  class Data < Arborist::Migration::Base
-    model :User, :attributes => {
-      :firstname => :first_name,
-      :lastname  => :last_name
-    }
-  end
   # ...
 end
 ```
 
-And, they can be used in conjunction with on
-e another:
 
 ```ruby
-class AddAdminToUser < ActiveRecord::Migration
-  class Data < Arborist::Migration::Base
-    model :User => :Person, :columns => {
-      [:User, :firstname] => [:Person, :first_name],
-      [:User, :lastname]  => [:Person, :last_name]
-    }
-  end
   # ...
 end
 ```
@@ -154,7 +164,7 @@ form of an addition to the offending migration...
 Add to migration 'db/migrate/1234567890_add_admin_to_person.rb':
 
 ```ruby
-class Data < Arborist::Migration::Base
+class AddAdminToPerson < Arborist::Migration
   model :User => '...'
 end
 ```
@@ -166,10 +176,8 @@ end
 Which generates:
 
 ```ruby
-class UpdateReferenceForUserModel < ActiveRecord::Migration
-  class Data < Arborist::Migration::Base
-    model :User => '...'
-  end
+class UpdateReferenceForUserModel < Arborist::Migration
+  model :User => '...'
 end
 ```
 
@@ -201,7 +209,7 @@ class AddAdminToUser < ActiveRecord::Migration
     add_column :users, :admin, :boolean, default: false
 
     # Data migration
-    User.all do |user|
+    User.all.each do |user|
       user.admin = true;
       user.save!
     end
@@ -278,9 +286,9 @@ as adding the admin flag to all users.
 
 Wouldn't it be nice if you could:
 
-*  Run data migrations side by side with the corresponding schema migration(s);
-*  Test the data migration routine;
-*  Optionally disable data migrations on an environment, such as production?
+* Run data migrations side by side with the corresponding schema migration(s);
+* Test the data migration routine;
+* Optionally disable data migrations on an environment, such as production?
 
 Sure, it would.
 
