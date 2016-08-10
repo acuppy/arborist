@@ -297,7 +297,7 @@ Sure, it would.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'arborist'
+gem 'arborist-rails'
 ```
 
 And then execute:

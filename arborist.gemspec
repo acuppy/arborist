@@ -4,12 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'arborist/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "arborist"
+  spec.name          = "arborist-rails"
   spec.version       = Arborist::VERSION
   spec.authors       = ["Adam Cuppy"]
   spec.email         = ["adam@codingzeal.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.homepage      = ""
+  spec.summary       = %q{Framework for working with data migrations and seeds
+    in a Rails application}
+  spec.homepage      = 'https://github.com/CodingZeal/arborist'
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
