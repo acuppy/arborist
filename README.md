@@ -2,7 +2,7 @@
 
 ## Usage
 
-`Arborist::Migration` is meant to run as a drop-in replacement to
+`Arborist::Migration` is meant to run as a drop-in replacement for
 `ActiveRecord::Migration`.  The easiest way to do that is modify your
  migrations to inherit from `Arborist::Migration`
 
@@ -11,10 +11,7 @@ class AddAdminToUser < Arborist::Migration
   data do
     # forward
   end
-
-  def change
-    add_column :users, :admin, :boolean
-  end
+  # ...
 end
 ```
 
@@ -32,27 +29,7 @@ class AddAdminToUser < Arborist::Migration
   data :down do
     # rollback
   end
-
-  def change
-    add_column :users, :admin, :boolean
-  end
-end
-```
-
-### Helpers
-
-Although all `ActiveRecord::Migration` methods are supported, there are a set
-of helpers to define one action against another.
-
-```ruby
-class AddAdminToUser < Arborist::Migration
-  data do # => :up
-    # data only adjustments
-  end
-
-  schema do # => :change
-    add_column :users, :admin, :boolean
-  end
+  # ...
 end
 ```
 
@@ -64,6 +41,23 @@ class AddAdminToUser < ActiveRecord::Migration
     # ...
   end
   # ...
+end
+```
+
+### Helpers
+
+Although all `ActiveRecord::Migration` methods are supported (e.g., `up`, `down`
+  , `change`), there are a set of helpers to define one action against another.
+
+```ruby
+class AddAdminToUser < Arborist::Migration
+  data do # :up
+    # data only adjustments
+  end
+
+  schema do # :change
+    add_column :users, :admin, :boolean
+  end
 end
 ```
 
@@ -82,21 +76,16 @@ class AddAdminToUser < Arborist::Migration
 
   data use: UpdateAdminFlag
 
-  def change
+  schema do
     add_column :users, :admin, :boolean, default: false
   end
 end
 ```
 
-Similar to other uses of `data` additional configuration options can be
-passed in following the
-
 ### Interchangeable Models
 
 A common 'best-practice' is to use raw SQL instead of `ActiveRecord` backed
-classes, which is a totally practical option (see explanation below), but you
-lose the power of `ActiveRecord`, *so what if we could use `ActiveRecord` to
-support those changes?*
+classes, which is a totally practical option (see explanation below), but you lose the power of `ActiveRecord`, *what if we could use `ActiveRecord` to support those changes?*
 
 Interchangeable models can be powerful tool when tracking object references.
 
@@ -126,76 +115,17 @@ class AddAdminToUser < Arborist::Migration
   model :Company, as: :company
 
   data do
-    user.all # ...
-    company.all # ...
+    # user.all...
+    # company.all...
   end
   # ...
 end
 ```
 
-#### Now why not just reference the model directly?
-
-Answer, Arborist intelligently detects if a model reference is missing (i.e.
-  removed at a later iteration) and provides a set of fallback options.
-
-The most common strategy is to forward all model requests to the renamed model:
-
-```ruby
-  # ...
-end
-```
-
-
-```ruby
-  # ...
-end
-```
-
-If this becomes confusing, that's okay. `Arborist` runs a built in linter
-(`Arborist::Migration.lint!`) prior to migrating to confirm that all models
-and attribute dependencies *being referenced* are available. If any failure
-exists, the migration will fail *prior* to running all the migrations.
-
-### Failure
-
-`Arborist` will suggest a data migration for the model reference, either in the
-form of an addition to the offending migration...
-
-Add to migration 'db/migrate/1234567890_add_admin_to_person.rb':
-
-```ruby
-class AddAdminToPerson < Arborist::Migration
-  model :User => '...'
-end
-```
-
-... or to generate a new data migration to fix the problem:
-
-`$ rails g data_migration:model User`
-
-Which generates:
-
-```ruby
-class UpdateReferenceForUserModel < Arborist::Migration
-  model :User => '...'
-end
-```
-
-## Testing
-
-By abstracting all larger migration routines to a nested class, we can test
-those as Ruby objects.
-
-With `RSpec` we can use a bank of custom matcher:
-
-```rspec
-require 'rails_helper'
-require_migration 'add_admin_to_user' # Note: Do NOT include the datetime stamp
-
-describe AddAdminToUser::Data do
-  # ...
-end
-```
+`Arborist` runs a built in linter (`Arborist::Migration.lint!`) prior to
+migrating to confirm that all models and attribute dependencies *being
+referenced* are available. If any failure exists, the migration will fail
+*prior* to running all the migrations.
 
 ## Methodology
 
@@ -210,7 +140,7 @@ class AddAdminToUser < ActiveRecord::Migration
 
     # Data migration
     User.all.each do |user|
-      user.admin = true;
+      user.admin = true
       user.save!
     end
   end
@@ -233,7 +163,6 @@ class AddAdminToUser < ActiveRecord::Migration
   # Temporary class
   class User < ActiveRecord::Base
   end
-
   # ...
 end
 ```
@@ -286,9 +215,9 @@ as adding the admin flag to all users.
 
 Wouldn't it be nice if you could:
 
-* Run data migrations side by side with the corresponding schema migration(s);
-* Test the data migration routine;
-* Optionally disable data migrations on an environment, such as production?
+*  Run data migrations side by side with the corresponding schema migration(s);
+*  Test the data migration routine;
+*  Optionally disable data migrations on an environment, such as production?
 
 Sure, it would.
 
@@ -300,17 +229,9 @@ Add this line to your application's Gemfile:
 gem 'arborist-rails'
 ```
 
-And then execute:
-
-`$ bundle`
-
-Or install it yourself as:
-
-`$ gem install arborist`
-
 ## Contributing
 
-1.  Fork it ( https://github.com/{my-github-username}/arborist/fork )
+1.  Fork it
 2.  Create your feature branch (`git checkout -b my-new-feature`)
 3.  Commit your changes (`git commit -am 'Add some feature'`)
 4.  Push to the branch (`git push origin my-new-feature`)
