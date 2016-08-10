@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe Arborist::Migration do
   describe 'public interface' do
-    %i( collection model_ref data model reset! ).each do |class_method|
+    %i(collection model_ref data model reset!).each do |class_method|
       it { expect(described_class).to respond_to class_method }
     end
   end
@@ -56,9 +57,9 @@ describe Arborist::Migration do
 
     context 'when a migration method being passed in does not exist' do
       specify do
-        expect {
+        expect do
           TestMigration.class_eval { schema(:foo) {} }
-        }.to raise_error Arborist::UnknownSchemaMethod
+        end.to raise_error Arborist::UnknownSchemaMethod
       end
     end
   end
@@ -82,7 +83,6 @@ describe Arborist::Migration do
           .to raise_error Arborist::ModelReferenceError
       end
     end
-
   end
 
   describe '.reset!' do

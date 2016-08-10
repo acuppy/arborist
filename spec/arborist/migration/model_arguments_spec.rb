@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 require 'arborist/migration/model_arguments'
 
@@ -26,7 +27,7 @@ describe Arborist::Migration::ModelArguments do
   end
 
   context 'when a fallback is defined' do
-    let(:args) { [{ :Unknown => :TestModel }] }
+    let(:args) { [{ Unknown: :TestModel }] }
 
     it { expect(model_args.model_ref).to eq :TestModel }
   end

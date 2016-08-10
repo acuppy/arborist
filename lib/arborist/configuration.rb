@@ -1,19 +1,18 @@
+# frozen_string_literal: true
 require 'ostruct'
 
 module Arborist
-  def self.config ns = nil
+  def self.config(ns = nil)
     @config     ||= Configuration.new
     @config[ns] ||= Configuration.new if ns
 
-    if block_given?
-      yield ns ? @config[ns] : @config
-    end
+    yield ns ? @config[ns] : @config if block_given?
 
     @config
   end
 
   class Configuration < OpenStruct
-    def initialize props={}
+    def initialize(props = {})
       super
       yield self if block_given?
     end

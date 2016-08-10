@@ -1,7 +1,7 @@
+# frozen_string_literal: true
 require_relative 'configuration'
 
 module Arborist
-
   config :migration do |c|
     c.fallback            = ModelReferenceError
     c.default_method_name = :model
@@ -32,7 +32,7 @@ module Arborist
       end
     end
 
-    def exec_migration conn, dir
+    def exec_migration(conn, dir)
       super conn, dir
       collection[dir].each do |m|
         m.report { instance_eval(&m.routine) }

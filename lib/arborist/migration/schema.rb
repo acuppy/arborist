@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Arborist::Migration::Schema
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def schema method = :change, &migration
+    def schema(method = :change, &migration)
       if SCHEMA_MIGRATION_METHODS.include? method
         define_method method, &migration
       else
@@ -12,6 +13,6 @@ module Arborist::Migration::Schema
 
     private
 
-    SCHEMA_MIGRATION_METHODS = %i( up down change )
+    SCHEMA_MIGRATION_METHODS = %i(up down change).freeze
   end
 end

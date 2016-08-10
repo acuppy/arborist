@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 module Arborist
   class ModelReferenceError < NameError
-    def initialize model_ref
+    def initialize(model_ref)
       super "#{model_ref} is not available"
     end
 
@@ -10,16 +11,16 @@ module Arborist
   end
 
   class UnknownSchemaMethod < ArgumentError
-    def initialize method_name
-      super %Q{Unknown schema migration method: #{method_name}.
-        Use :up, :down or :change}
+    def initialize(method_name)
+      super %(Unknown schema migration method: #{method_name}.
+        Use :up, :down or :change)
     end
   end
 
   class InheritanceError < StandardError
-    def initialize method_name
-      super %Q{ Method not available in ActiveRecord::Migration. Inherit from
-        Arborist::Migration to use #{method_name}}
+    def initialize(method_name)
+      super %( Method not available in ActiveRecord::Migration. Inherit from
+        Arborist::Migration to use #{method_name})
     end
   end
 end

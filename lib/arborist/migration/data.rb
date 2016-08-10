@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Arborist::Migration::Data
   extend ActiveSupport::Concern
 
@@ -11,14 +12,14 @@ module Arborist::Migration::Data
   module ClassMethods
     attr_accessor :model_ref
 
-    def data *args, &migration
+    def data(*args, &migration)
       data_migration = DataMigration.new *args, &migration
 
       self.collection ||= Collection.new
       self.collection[data_migration.direction] << data_migration
     end
 
-    def model *args
+    def model(*args)
       model_args = ModelArguments.new args
       define_model_reference model_args.model_ref
       define_model_method model_args
@@ -26,7 +27,7 @@ module Arborist::Migration::Data
 
     private
 
-    def define_model_method model_args
+    def define_model_method(model_args)
       define_method model_args.method_name do
         @_ref ||= {}
         @_ref[model_args] ||= begin
@@ -39,7 +40,7 @@ module Arborist::Migration::Data
       end
     end
 
-    def define_model_reference model_ref
+    def define_model_reference(model_ref)
       self.model_ref ||= {}
       self.model_ref[model_ref] ||= Object.const_get model_ref
     rescue NameError

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'pry-byebug'
 require 'arborist'
@@ -7,8 +8,8 @@ RSpec.configure do |c|
 end
 
 ActiveRecord::Base.establish_connection(
-  adapter: "sqlite3",
-  database: ":memory:"
+  adapter: 'sqlite3',
+  database: ':memory:'
 )
 
 def define_schema(verbose = false, &schema)

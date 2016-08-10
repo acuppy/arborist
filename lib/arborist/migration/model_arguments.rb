@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 class Arborist::Migration::ModelArguments
   attr_reader :model_ref, :method_name
 
-  def initialize args
+  def initialize(args)
     options = args.extract_options!
 
     @model_ref   = args.first || model_from_options(options)
@@ -10,11 +11,11 @@ class Arborist::Migration::ModelArguments
 
   private
 
-  RESERVED_OPTIONS = %i( as )
+  RESERVED_OPTIONS = %i(as).freeze
 
-  def model_from_options options
+  def model_from_options(options)
     options
-      .select { |k, _| ! RESERVED_OPTIONS.include? k }
+      .select { |k, _| !RESERVED_OPTIONS.include? k }
       .values
       .first
   end

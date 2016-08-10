@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'delegate'
 
 class Arborist::Migration::Collection
@@ -5,6 +6,6 @@ class Arborist::Migration::Collection
   def_delegators :@collection, :[], :fetch
 
   def initialize
-    @collection = { up:[], down:[] }
+    @collection = { up: [], down: [] }
   end
 end
