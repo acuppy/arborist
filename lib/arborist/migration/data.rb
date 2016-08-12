@@ -33,7 +33,7 @@ module Arborist::Migration::Data
         @_ref[model_args] ||= begin
           ref = self.class.model_ref.fetch model_args.model_ref
 
-          if Arborist.config.migration.reset_column_information
+          if reset_column_information?
             ref.tap(&:reset_column_information)
           end
         end
@@ -49,6 +49,10 @@ module Arborist::Migration::Data
 
     def config
       Arborist.config.migration
+    end
+
+    def reset_column_information?
+      !!config.reset_column_information
     end
   end
 end
