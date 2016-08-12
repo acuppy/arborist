@@ -13,7 +13,7 @@ module Arborist::Migration::Data
     attr_accessor :model_ref
 
     def data(*args, &migration)
-      data_migration = DataMigration.new *args, &migration
+      data_migration = DataMigration.new(*args, &migration)
 
       self.collection ||= Collection.new
       self.collection[data_migration.direction] << data_migration

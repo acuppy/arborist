@@ -3,6 +3,8 @@ module Arborist::Migration::Schema
   extend ActiveSupport::Concern
 
   module ClassMethods
+    SCHEMA_MIGRATION_METHODS = %i(up down change).freeze
+
     def schema(method = :change, &migration)
       if SCHEMA_MIGRATION_METHODS.include? method
         define_method method, &migration
@@ -10,9 +12,5 @@ module Arborist::Migration::Schema
         raise Arborist::UnknownSchemaMethod, method
       end
     end
-
-    private
-
-    SCHEMA_MIGRATION_METHODS = %i(up down change).freeze
   end
 end

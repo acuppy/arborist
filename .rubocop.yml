@@ -8,6 +8,8 @@ AllCops:
   DisplayCopNames: true
 Rails:
   Enabled: true
+Rails/Output:
+  Enabled: false
 Style/Documentation:
   Enabled: false
 Style/HashSyntax:
@@ -17,4 +19,6 @@ Style/HashSyntax:
 Style/LambdaCall:
   Enabled: false
 Style/MultilineMethodCallIndentation:
+  Enabled: false
+Style/ClassAndModuleChildren:
   Enabled: false

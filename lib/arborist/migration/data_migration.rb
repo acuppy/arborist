@@ -15,7 +15,7 @@ class Arborist::Migration::DataMigration
   def report(&block)
     puts "~> #{config.default_message} #{options[:say]}"
     time = Benchmark.measure(&block)
-    puts '~> Completed. Time elapsed: %.4fs' % time.real
+    puts format('~> Completed. Time elapsed: %.4fs', time.real)
   end
 
   private
