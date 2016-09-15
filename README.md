@@ -36,7 +36,7 @@ end
 Optionally, pass a migration message:
 
 ```ruby
-class AddAdminToUser < ActiveRecord::Migration
+class AddAdminToUser < Arborist::Migration
   data say: 'Updating admin flag' do
     # ...
   end
