@@ -3,6 +3,7 @@ require_relative 'configuration'
 
 module Arborist
   config :migration do |c|
+    c.rails_version       = '5.1'
     c.fallback            = ModelReferenceError
     c.default_method_name = :model
     c.default_direction   = :up
@@ -10,7 +11,7 @@ module Arborist
     c.reset_column_information = true
   end
 
-  class Migration < ActiveRecord::Migration
+  class Migration < ActiveRecord::Migration[self.config.migration.rails_version]
     require_relative 'migration/collection'
     require_relative 'migration/data'
     require_relative 'migration/schema'
