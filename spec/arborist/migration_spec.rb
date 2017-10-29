@@ -112,7 +112,7 @@ describe TestMigration do
       expect(TestModel.first.fullname).to be_present
 
       ActiveRecord::Migration.run SecondMigration
-      expect(TestModel.first.full_name).to be_present
+      expect(TestModel.first.reload.full_name).to be_present
     end
   end
 end
