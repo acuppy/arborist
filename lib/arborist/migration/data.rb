@@ -25,6 +25,10 @@ module Arborist::Migration::Data
       define_model_method model_args
     end
 
+    def config
+      Arborist.config.migration
+    end
+
     private
 
     def define_model_method(model_args)
@@ -33,7 +37,7 @@ module Arborist::Migration::Data
         @_ref[model_args] ||= begin
           ref = self.class.model_ref.fetch model_args.model_ref
 
-          if reset_column_information?
+          if config.reset_column_information
             ref.tap(&:reset_column_information)
           end
         end
@@ -45,14 +49,6 @@ module Arborist::Migration::Data
       self.model_ref[model_ref] ||= Object.const_get model_ref
     rescue NameError
       config.fallback.new(model_ref).model
-    end
-
-    def config
-      Arborist.config.migration
-    end
-
-    def reset_column_information?
-      !!config.reset_column_information
     end
   end
 end
