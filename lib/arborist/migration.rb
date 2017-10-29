@@ -21,16 +21,14 @@ module Arborist
 
     class << self
       attr_accessor :collection
+    end
 
-      def reset!
-        self.collection = Collection.new
-      end
+    def self.reset!
+      self.collection = Collection.new
+    end
 
-      private
-
-      def config
-        Arborist.config.migration
-      end
+    def self.config
+      Arborist.config.migration
     end
 
     def exec_migration(conn, dir)
@@ -40,14 +38,14 @@ module Arborist
       end
     end
 
-    private
-
-    def collection
-      self.class.collection
-    end
-
     def config
       self.class.config
     end
+
+    private
+
+      def collection
+        self.class.collection
+      end
   end
 end
