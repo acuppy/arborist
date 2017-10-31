@@ -105,14 +105,20 @@ describe TestMigration do
   end
 
   describe 'migrating up' do
+    def reloaded_model(model)
+      model.reload
+    end
+
     it 'fills in the missing value' do
       expect(TestModel.first).to_not respond_to :fullname
 
       ActiveRecord::Migration.run TestMigration
-      expect(TestModel.first.fullname).to be_present
+      expect(reloaded_model(TestModel.first)).to respond_to :fullname
 
       ActiveRecord::Migration.run SecondMigration
-      expect(TestModel.first.reload.full_name).to be_present
+      model = reloaded_model(TestModel.first)
+      expect(model).to_not respond_to :fullname
+      expect(model).to respond_to :full_name
     end
   end
 end

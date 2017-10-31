@@ -47,5 +47,6 @@ class SecondMigration < Arborist::Migration
 
   def change
     rename_column :test, :fullname, :full_name
+    model.reset_column_information
   end
 end
